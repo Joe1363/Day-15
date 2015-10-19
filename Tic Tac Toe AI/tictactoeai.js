@@ -49,17 +49,38 @@ $(window).load(function(){
   });
 
 //Mass of functions//
-function computerAI() {
+function compgame() {
+  if (currentplayer == "o") {
 
-}
-
-function ifstatement(thisid) {
-  for (i = 0; i < 9; i++) {
-    if (i == thisid) {
+    if (gamedone == false) {
+    var thisid = computerAI();
     everything(thisid);
-    }
+    compgame();
+  }
+  } else if (currentplayer == "x") {
+    $(".square").click(function() {
+
+      if (gamedone == false) {
+        var thisid = $(this).attr('id');
+        everything(thisid);
+        compgame();
+      }
+    });//square click
   };
-}
+};
+
+function computerAI() {
+  var copyarray = boardcondition.slice(0);
+  var testarray = [];
+
+  for (x = 0; x < copyarray.length; x++) {
+    if (copyarray[x] == 0) {
+      testarray.push(x);
+    }
+  }
+  var compnumber = Math.floor(Math.random() * testarray.length);
+  return testarray[compnumber];
+};
 
 function game(player1, player2, gametype) {
   $('.gameselection').css("visibility", "hidden");
@@ -71,35 +92,19 @@ function game(player1, player2, gametype) {
 
 if (gametype == "2p") {
     $(".square").click(function() {
-      var checkvalid = true;
 
       if (gamedone == false) {
         var thisid = $(this).attr('id');
-        ifstatement(thisid);
+        everything(thisid);
       }
     });//square click
   } else if (gametype == "comp") {
-    if (currentplayer == "o") {
-      var checkvalid = true;
-      if (gamedone == false) {
-      var thisid = computerAI();
-      ifstatement(thisid);
-      }
-    } else if (currentplayer == "x") {
-      $(".square").click(function() {
-        var checkvalid = true;
-
-        if (gamedone == false) {
-          var thisid = $(this).attr('id');
-          ifstatement(thisid);
-        }
-      });//square click
-    };
+  compgame();
   };
 }//game function
 
   function everything(thisid) {
-    checkvalid = startturn(thisid, currentplayer);
+    var checkvalid = startturn(thisid, currentplayer);
     if (checkvalid == true) {
       writeboard(thisid, currentplayer);
       wincheck(currentplayer);
@@ -111,7 +116,7 @@ if (gametype == "2p") {
         };
       };
     }
-  }
+  };
 
   function turntrack(count) {
     if (count >= 8) {
@@ -164,6 +169,9 @@ function restart() {
   $(".grid").children().children().removeClass("x");
   $(".grid").children().children().removeClass("disable");
   $("#announcer").html(players[currentplayer] + "'s turn");
+  if (currentplayer == 'o' && gametype == "comp") {
+    compgame();
+  }
   });
 
   $("#newplayers").click(function() {
@@ -207,7 +215,7 @@ function restart() {
 
   function announcer(currentplayer) {
     $("#announcer").html(players[currentplayer] + "'s turn");
-  }
+  };
 
   function addNames(p1, p2) {
   $("#player1").html(p1);
